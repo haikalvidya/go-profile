@@ -1,0 +1,361 @@
+basePath: /
+definitions:
+  requests.CreateProfileRequest:
+    properties:
+      alamat:
+        example: Jl. Echo
+        type: string
+      nama_lengkap:
+        example: Echo Parecho
+        type: string
+      nomer_telpon:
+        example: "+6281234123421"
+        type: string
+      pekerjaan:
+        example: DevOps
+        type: string
+      pendidikan_terakhir:
+        example: Mahasiswa
+        type: string
+    required:
+    - alamat
+    - nama_lengkap
+    - nomer_telpon
+    - pekerjaan
+    - pendidikan_terakhir
+    type: object
+  requests.LoginRequest:
+    properties:
+      email:
+        example: john.doe@example.com
+        type: string
+      password:
+        example: password123456
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  requests.RefreshRequest:
+    properties:
+      token:
+        example: refresh_token
+        type: string
+    required:
+    - token
+    type: object
+  requests.RegisterRequest:
+    properties:
+      email:
+        example: john.doe@example.com
+        type: string
+      name:
+        example: JohnDoe
+        type: string
+      password:
+        example: password123456
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  requests.UpdateProfileRequest:
+    properties:
+      alamat:
+        example: Jl. Echo
+        type: string
+      nama_lengkap:
+        example: Echo Parecho
+        type: string
+      nomer_telpon:
+        example: "+6281234123421"
+        type: string
+      pekerjaan:
+        example: DevOps
+        type: string
+      pendidikan_terakhir:
+        example: Mahasiswa
+        type: string
+    required:
+    - alamat
+    - nama_lengkap
+    - nomer_telpon
+    - pekerjaan
+    - pendidikan_terakhir
+    type: object
+  responses.Data:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  responses.Error:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+    type: object
+  responses.LoginResponse:
+    properties:
+      accessToken:
+        type: string
+      exp:
+        type: integer
+      refreshToken:
+        type: string
+    type: object
+  responses.ProfileResponse:
+    properties:
+      alamat:
+        example: Jl. Echo
+        type: string
+      email:
+        example: John@doo.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      nama_lengkap:
+        example: Echo Parecho
+        type: string
+      nomer_telpon:
+        example: "+6281234123421"
+        type: string
+      pekerjaan:
+        example: DevOps
+        type: string
+      pendidikan_terakhir:
+        example: Mahasiswa
+        type: string
+      username:
+        example: John
+        type: string
+    type: object
+info:
+  contact:
+    email: haikalvidya@gmail.com
+    name: Vidya Haikal
+  description: This is a simple version of user profile using Echo app.
+  title: Go Profile
+  version: "1.0"
+paths:
+  /api/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: Perform user login
+      operationId: user-login
+      parameters:
+      - description: User's credentials
+        in: body
+        name: params
+        required: true
+        schema:
+          $ref: '#/definitions/requests.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Error'
+      summary: Authenticate a user
+      tags:
+      - User Actions
+  /api/v1/profiles:
+    get:
+      description: Get the list of all profiles
+      operationId: profiles-get
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.ProfileResponse'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Get profiles
+      tags:
+      - Profiles Actions
+    post:
+      consumes:
+      - application/json
+      description: Create profile
+      operationId: profiles-create
+      parameters:
+      - description: Profile alamat, pekerjaan, nama lengkap, pendidikan, nomor telpon
+        in: body
+        name: params
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.Data'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create profile
+      tags:
+      - Profiles Actions
+  /api/v1/profiles/{id}:
+    delete:
+      description: Delete profile
+      operationId: profiles-delete
+      parameters:
+      - description: Profile ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/responses.Data'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete profile
+      tags:
+      - Profiles Actions
+    get:
+      description: Get the profiles by id
+      operationId: profiles-get-one
+      parameters:
+      - description: Profile ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.ProfileResponse'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Get profile
+      tags:
+      - Profiles Actions
+    put:
+      consumes:
+      - application/json
+      description: Update profile
+      operationId: profiles-update
+      parameters:
+      - description: Profile ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Profile alamat, pekerjaan, nama lengkap, pendidikan, nomor telpon
+        in: body
+        name: params
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UpdateProfileRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.Data'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Error'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update profile
+      tags:
+      - Profiles Actions
+  /api/v1/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Perform refresh access token
+      operationId: user-refresh
+      parameters:
+      - description: Refresh token
+        in: body
+        name: params
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RefreshRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.Error'
+      summary: Refresh access token
+      tags:
+      - User Actions
+  /api/v1/register:
+    post:
+      consumes:
+      - application/json
+      description: New user registration
+      operationId: user-register
+      parameters:
+      - description: User's email, user's password
+        in: body
+        name: params
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.Data'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.Error'
+      summary: Register
+      tags:
+      - User Actions
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
